@@ -1,5 +1,4 @@
 from sqlalchemy import Column, String, Integer, ForeignKey
-from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 
 class School(BaseModel):
@@ -9,9 +8,3 @@ class School(BaseModel):
     name = Column(String, nullable=False)
     address = Column(String)
     phone = Column(String)
-    
-    # Relationships
-    tenant = relationship("Tenant", back_populates="schools")
-    academic_years = relationship("AcademicYear", back_populates="school")
-    classes = relationship("Class", back_populates="school")
-    subjects = relationship("Subject", back_populates="school")

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, validator
 from datetime import time, date
 from typing import Optional, List, Dict, Union
-from app.models.academic import WeekDay, GradingSystem, AssessmentType
+from app.models.academic_core import WeekDay, GradingSystem, AssessmentType
 from app.schemas.base import TimestampSchema
 
 class AcademicYearBase(BaseModel):

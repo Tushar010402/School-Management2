@@ -1,5 +1,4 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Boolean
-from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 from app.models.enums import UserRole
 
@@ -12,8 +11,3 @@ class User(BaseModel):
     hashed_password = Column(String, nullable=False)
     role = Column(String, nullable=False)  # Store as string to avoid SQLite enum issues
     is_active = Column(Boolean, default=True, nullable=False)  # Changed to Boolean
-    
-    # Relationships
-    tenant = relationship("Tenant", back_populates="users")
-    created_tickets = relationship("SupportTicket", back_populates="created_by", foreign_keys="[SupportTicket.created_by_id]")
-    ticket_comments = relationship("TicketComment", back_populates="user")

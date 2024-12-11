@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     # File storage settings
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE: int = 5242880
+    USE_S3: bool = False
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
+    AWS_REGION: str = "us-east-1"
+    AWS_BUCKET_NAME: str = ""
     
     class Config:
         case_sensitive = True

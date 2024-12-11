@@ -1,6 +1,6 @@
 from enum import Enum
-from sqlalchemy import Column, Integer, String, Date, Boolean, ForeignKey, Enum as SQLEnum
-from sqlalchemy.orm import relationship
+from sqlalchemy import Integer, String, Date, Boolean, ForeignKey, Enum as SQLEnum
+from sqlalchemy.sql.schema import Column
 from app.models.base import BaseModel
 
 class Gender(str, Enum):
@@ -38,13 +38,6 @@ class Student(BaseModel):
     previous_school = Column(String)
     is_active = Column(Boolean, default=True)
 
-    # Relationships
-    tenant = relationship("Tenant", back_populates="students")
-    user = relationship("User", back_populates="student_profile")
-    guardians = relationship("Guardian", back_populates="student")
-    documents = relationship("StudentDocument", back_populates="student")
-    notes = relationship("StudentNote", back_populates="student")
-
 class Guardian(BaseModel):
     __tablename__ = "guardians"
 
@@ -61,10 +54,6 @@ class Guardian(BaseModel):
     is_emergency_contact = Column(Boolean, default=False)
     is_authorized_pickup = Column(Boolean, default=False)
 
-    # Relationships
-    student = relationship("Student", back_populates="guardians")
-    user = relationship("User", back_populates="guardian_profile")
-
 class StudentDocument(BaseModel):
     __tablename__ = "student_documents"
 
@@ -80,11 +69,6 @@ class StudentDocument(BaseModel):
     is_verified = Column(Boolean, default=False)
     verification_date = Column(Date)
 
-    # Relationships
-    student = relationship("Student", back_populates="documents")
-    uploader = relationship("User", foreign_keys=[uploaded_by])
-    verifier = relationship("User", foreign_keys=[verified_by])
-
 class StudentNote(BaseModel):
     __tablename__ = "student_notes"
 
@@ -95,7 +79,3 @@ class StudentNote(BaseModel):
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
     is_confidential = Column(Boolean, default=False)
-
-    # Relationships
-    student = relationship("Student", back_populates="notes")
-    author = relationship("User", back_populates="student_notes")
