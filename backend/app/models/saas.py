@@ -1,6 +1,5 @@
 from enum import Enum
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Enum as SQLEnum, Text, DateTime
-from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 
 class SaaSRole(str, Enum):
@@ -39,10 +38,6 @@ class SaaSAdmin(BaseModel):
     full_name = Column(String)
     phone = Column(String)
 
-    # Relationships
-    assigned_tickets = relationship("SupportTicket", back_populates="assigned_to")
-    assigned_tasks = relationship("OnboardingTask", back_populates="assigned_to")
-
 class SupportTicket(BaseModel):
     __tablename__ = "support_tickets"
 
@@ -56,12 +51,6 @@ class SupportTicket(BaseModel):
     resolved_at = Column(DateTime)
     resolution_notes = Column(Text)
 
-    # Relationships
-    school = relationship("School", back_populates="support_tickets")
-    created_by = relationship("User", back_populates="created_tickets")
-    assigned_to = relationship("SaaSAdmin", back_populates="assigned_tickets")
-    comments = relationship("TicketComment", back_populates="ticket")
-
 class TicketComment(BaseModel):
     __tablename__ = "ticket_comments"
 
@@ -69,10 +58,6 @@ class TicketComment(BaseModel):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     content = Column(Text, nullable=False)
     is_internal = Column(Boolean, default=False)  # For internal team notes
-
-    # Relationships
-    ticket = relationship("SupportTicket", back_populates="comments")
-    user = relationship("User", back_populates="ticket_comments")
 
 class OnboardingTask(BaseModel):
     __tablename__ = "onboarding_tasks"
@@ -87,16 +72,3 @@ class OnboardingTask(BaseModel):
     completion_notes = Column(Text)
     order = Column(Integer, nullable=False)  # For task sequence
     is_blocking = Column(Boolean, default=False)  # If this task blocks other tasks
-
-    # Relationships
-    school = relationship("School", back_populates="onboarding_tasks")
-    assigned_to = relationship("SaaSAdmin", back_populates="assigned_tasks")
-    # Task dependencies relationship
-    dependencies = relationship(
-        "OnboardingTask",
-        secondary="task_dependencies",
-        primaryjoin="OnboardingTask.id==task_dependencies.c.task_id",
-        secondaryjoin="OnboardingTask.id==task_dependencies.c.depends_on_id",
-        backref="dependent_tasks",
-        lazy="joined"
-    )
